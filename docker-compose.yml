@@ -1,10 +1,14 @@
-version: '3'
+version: "3.9"
 services:
-    fauxtto:
-        image: php:apache
-        ports:
-            - "8080:80"
-        volumes:
-            - ./www/:/var/www/html/
-        restart: always
-        stop_grace_period: 0s
+  proxy:
+    image: haproxy:2.4.3-alpine
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./deploy/proxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    command: haproxy -f /usr/local/etc/haproxy/haproxy.cfg
+    depends_on:
+      - app
+  app:
+    build:
+      context: ./deploy/app
