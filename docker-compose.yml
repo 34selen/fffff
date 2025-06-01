@@ -1,14 +1,28 @@
-version: "3.9"
 services:
-  proxy:
-    image: haproxy:2.4.3-alpine
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./deploy/proxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    command: haproxy -f /usr/local/etc/haproxy/haproxy.cfg
-    depends_on:
-      - app
-  app:
+  checker:
     build:
-      context: ./deploy/app
+      context: ./checker
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - internal
+    restart: always
+  node:
+    build:
+      context: ./node
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - internal
+  python:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
