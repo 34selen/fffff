@@ -1,20 +1,31 @@
 version: '3.8'
 
 services:
-  core:
+  app:
     build:
-      context: ./core
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"   
+      - "5001:5000"
     environment:
-      - PORT=3000
+      - MONGO_URI=mongodb://mongo:27017/
     depends_on:
-      - legacy
+      - mongo
+    networks:
+      - app-network
 
-  legacy:
-    build:
-      context: ./legacy
-    environment:
-      - PORT=3001
-    expose:
-      - "3001"       
+  mongo:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
