@@ -1,0 +1,3 @@
+hmmm....
+
+/?path=['/img','/upload','/admin','/flag','/info','/view','/list']
